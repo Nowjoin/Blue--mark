@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invite Verification</title>
+<style>
+    /* Full page and background */
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFkWEHFoBnAyuWfjsHKo66d230Rkoj9cZCmg&s') no-repeat center center fixed;
+        background-size: cover;
+        color: #000;
+    }
+
+    /* Overlay blur effect */
+    body::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        backdrop-filter: blur(8px);
+        z-index: 0;
+    }
+
+    /* Centered box */
+    .box {
+        position: relative;
+        z-index: 1;
+        background-color: #ffffff;
+        padding: 25px 30px;
+        border-radius: 8px;
+        text-align: center;
+        width: 350px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        border: 1px solid #dddfe2;
+    }
+
+    h3 {
+        color: #1877F2;
+        font-size: 22px;
+        margin-bottom: 30px;
+        margin-top: 20px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        margin: 12px 0;
+        border-radius: 6px;
+        border: 1px solid #ccd0d5;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+    /* Buttons */
+    button {
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(90deg, #1877F2, #1a6ed8);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background 0.3s, transform 0.2s;
+        margin-top: 10px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    button:hover {
+        background: linear-gradient(90deg, #165ecc, #144bb5);
+        transform: translateY(-1px);
+    }
+
+    button:active {
+        transform: translateY(1px);
+    }
+
+    /* Spinner inside buttons */
+    .spinner {
+        border: 3px solid #fff;
+        border-top: 3px solid #1877F2;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        animation: spin 1s linear infinite;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+    }
+
+    @keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Hide text when processing */
+    .processing span {
+        visibility: hidden;
+    }
+
+    .message h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .message p {
+        font-size: 14px;
+        color: #1c1e21;
+    }
+
+    .warning {
+        color: #ff4d4d;
+        font-size: 12px;
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+<div class="box">
+    <div id="form-section">
+        <h3>Badge Invite Verification</h3>
+        <p>This is required to confirm if you received our invitation.</p>
+        <p>Please enter your full name</p>
+        <input type="text" id="fullname" placeholder="Full Name">
+        <button id="submitBtn" onclick="verifyInvite(this)">
+            <span>Submit</span>
+            <div class="spinner"></div>
+        </button>
+    </div>
+    <div id="message-section" class="message" style="display:none;">
+        <h3>Congratulations!</h3>
+        <p>You have received the invitation. You can start the process now.</p>
+        <button id="continueBtn" onclick="continueToNext(this)">
+            <span>Continue</span>
+            <div class="spinner"></div>
+        </button>
+        <p class="warning">Closing this window will lose your session and you won't be able to apply again.</p>
+    </div>
+</div>
+
+<script>
+function showSpinner(button) {
+    const spinner = button.querySelector('.spinner');
+    const text = button.querySelector('span');
+    button.classList.add('processing');
+    spinner.style.display = 'block';
+    text.style.visibility = 'hidden';
+    button.disabled = true;
+}
+
+function hideSpinner(button) {
+    const spinner = button.querySelector('.spinner');
+    const text = button.querySelector('span');
+    spinner.style.display = 'none';
+    text.style.visibility = 'visible';
+    button.classList.remove('processing');
+    button.disabled = false;
+}
+
+function verifyInvite(button) {
+    const name = document.getElementById('fullname').value.trim();
+    if(name.length === 0) {
+        alert("Please enter your full name to continue.");
+        return;
+    }
+
+    showSpinner(button);
+
+    setTimeout(() => {
+        hideSpinner(button);
+        document.getElementById('form-section').style.display = 'none';
+        document.getElementById('message-section').style.display = 'block';
+    }, 3000); // spinner for 3 seconds
+}
+
+function continueToNext(button) {
+    showSpinner(button);
+    setTimeout(() => {
+        sessionStorage.setItem('verified', 'true');
+        window.location.href = 'index2.html';
+    }, 3000); // spinner for 3 seconds
+}
+</script>
+</body>
+</html>
